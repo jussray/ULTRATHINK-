@@ -1,0 +1,101 @@
+name: Validate skills
+
+on:
+  pull_request:
+    paths:
+      - '.claude/skills/**'
+      - '.github/workflows/validate-skills.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - '.claude/skills/**'
+      - '.github/workflows/validate-skills.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-af-skill:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate Juss AF skill contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          skill = Path('.claude/skills/juss-af-skills-pack/SKILL.md')
+          kernel = Path('.claude/skills/juss-os/SKILL.md')
+          law = Path('.claude/skills/juss-os/references/os.md')
+
+          for path in (skill, kernel, law):
+              if not path.is_file():
+                  raise SystemExit(f'missing required file: {path}')
+
+          text = skill.read_text(encoding='utf-8')
+          lines = text.splitlines()
+          if not lines or lines[0] != '---':
+              raise SystemExit('skill frontmatter must begin with ---')
+
+          try:
+              end = lines.index('---', 1)
+          except ValueError as exc:
+              raise SystemExit('skill frontmatter must end with ---') from exc
+
+          front = lines[1:end]
+
+          def scalar(key: str) -> str:
+              prefix = f'{key}:'
+              for line in front:
+                  if line.startswith(prefix):
+                      return line[len(prefix):].strip()
+              raise SystemExit(f'missing frontmatter key: {key}')
+
+          if scalar('name') != 'juss-af-skills-pack':
+              raise SystemExit('unexpected skill name')
+          if scalar('status') != 'canonical-first-party':
+              raise SystemExit('unexpected skill status')
+
+          try:
+              trigger_start = front.index('triggers:') + 1
+          except ValueError as exc:
+              raise SystemExit('missing triggers block') from exc
+
+          triggers = []
+          for line in front[trigger_start:]:
+              if line.startswith('  - '):
+                  triggers.append(line[4:].strip())
+                  continue
+              if line.strip():
+                  break
+
+          expected = {
+              '/afvideo',
+              '/makevideo',
+              '/MAKEVIDEO',
+              '/makeimage',
+              '/MAKEIMAGE',
+              '/advertise',
+              '/campaign',
+          }
+          if set(triggers) != expected or len(triggers) != len(expected):
+              raise SystemExit(f'unexpected trigger set: {triggers}')
+          if 'ULTRATHINK' in triggers:
+              raise SystemExit('generic ULTRATHINK must not trigger the creative module')
+
+          required_boundary = (
+              'This pack is a subordinate creative-production module under `juss-os`.',
+              'Before running it, load `../juss-os/SKILL.md` and `../juss-os/references/os.md`.',
+              'it cannot override `juss-os` authority, phase, evidence, state, receipt, merge/deploy, or verification gates.',
+          )
+          for statement in required_boundary:
+              if statement not in text:
+                  raise SystemExit(f'missing kernel-boundary contract: {statement}')
+
+          print('Juss AF skill contract: PASS')
+          PY
