@@ -25,4 +25,4 @@ jobs:
         run: python -m compileall -q .claude/skills/juss-os/scripts
       - name: Run conformance tests
         working-directory: .claude/skills/juss-os/scripts
-        run: python -m unittest -v test_modes.py
+        run: python -m unittest -v test_modes.py test_evidence_ledger.py
