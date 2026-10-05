@@ -13,14 +13,18 @@ from evidence_core import classify_claim, diagnose_runtime_boundary
 def audit(payload: dict[str, Any]) -> dict[str, Any]:
     results = []
     for idx, claim in enumerate(payload.get("claims") or [], start=1):
-        label, notes = classify_claim(claim.get("evidence") or [], bool(claim.get("blocked")))
+        label, notes = classify_claim(
+            claim.get("evidence") or [],
+            bool(claim.get("blocked")),
+            claim.get("required_source_kind"),
+        )
         results.append({
             "id": claim.get("id", f"claim-{idx}"),
             "claim": claim.get("claim", ""),
             "label": label,
             "notes": notes,
             "closure_evidence": claim.get("closure_evidence") or (
-                "direct fresh evidence from the highest reachable authority" if label != "VERIFIED" else "none"
+                "direct fresh resolved evidence from the required authority" if label != "VERIFIED" else "none"
             ),
         })
 
