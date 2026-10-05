@@ -3,12 +3,12 @@ name: juss-os
 description: Juss's operating system for agent work across jussray repos and the AI council — authority, runtime attribution, evidence labels, gates, executable truth/confess modes, receipts, and report format.
 license: Proprietary — Juss / jussray
 metadata:
-  version: v3.1
+  version: v3.1.1
   status: MERGE-APPROVED EXPORT; CANONICALIZATION UNKNOWN pending exact FOUNDER ACCEPT
   owner: Juss (founder / acceptance authority)
   canonical-writer: Claude (phase-scoped lane)
-  body-sha256: 'eaac2ae104e70a453ba1c4e48d23744aa9a03b6309b7dd5b8f98ffafbea225bf'
-  lineage: v1 → v2 → v2.1 → v3 + Muse 5 + Court C0–C4 → v3.1 truth/confess/runtime implementation
+  body-sha256: '9467e3f53c166e7d847340ed24893bef7626bb6e9213571ca602c2e451010f78'
+  lineage: v1 → v2 → v2.1 → v3 + Muse 5 + Court C0–C4 → v3.1 truth/confess/runtime implementation → v3.1.1 public technical reply evidence gate
 ---
 
 # Juss OS — kernel
@@ -31,16 +31,17 @@ PR #1 merge approval and formal canonicalization are separate facts. Read `refer
 
 1. Read `references/os.md` in full as the inherited v3 base.
 2. Read `references/runtime-first-class.md` and `references/acceptance.md`.
-3. Load `.claude/skills/truthmode/SKILL.md`, `.claude/skills/confess/SKILL.md`, and `.claude/skills/reasoning-stack/SKILL.md` when those modes/lenses apply.
-4. Read the target repo's own agent docs (`CLAUDE.md`, `AGENTS.md`, `.claude/`). Never ask Juss to restate them.
-5. Declare the seam and fingerprint, each field a value or UNKNOWN, never invented:
+3. Read `references/public-technical-reply-evidence-gate.md` before drafting, approving, or reinforcing a public technical reply about a Juss-owned project.
+4. Load `.claude/skills/truthmode/SKILL.md`, `.claude/skills/confess/SKILL.md`, and `.claude/skills/reasoning-stack/SKILL.md` when those modes/lenses apply.
+5. Read the target repo's own agent docs (`CLAUDE.md`, `AGENTS.md`, `.claude/`). Never ask Juss to restate them.
+6. Declare the seam and fingerprint, each field a value or UNKNOWN, never invented:
    ```
    PHASE: GOVERNANCE | IMPLEMENTATION · WRITE OWNER: <agent>
    REPO · BRANCH · SHA · TARGET ENV · DEPLOY-ID
    GOAL · SUSPECT · FIRST EVIDENCE · KNOWN-RED · STOP WHEN
    ```
    Missing PHASE or WRITE OWNER = BLOCKED for writes.
-6. If a receipt chain exists, run the checker before trusting it:
+7. If a receipt chain exists, run the checker before trusting it:
    `python3 scripts/receipts_check.py <receipts-dir> --head <SHA> --evidence-root <dir>`
    Exit 0 OK · 1 STALE · 2 BROKEN · 3 UNVERIFIED. Only 0 counts as verified continuity.
 
@@ -56,6 +57,18 @@ PR #1 merge approval and formal canonicalization are separate facts. Read `refer
 8. **Real path or BLOCKED.** Playwright for user-facing web changes: target URL + env + SHA + artifact, or record the missing piece.
 9. **States are gated.** COMMITTED → PR OPEN → CI VERIFIED → MERGED → DEPLOYED → RUNTIME VERIFIED. COMMITTED ≠ DONE.
 10. **Receipts when state changes.** Cross-repo state must remain durable and evidence-bound.
+
+## Public technical reply evidence gate
+
+For public technical replies about Juss-owned projects, do not draft from the commenter’s wording alone when the claim can be checked.
+
+Run:
+
+`COMMENT → IDENTIFY CLAIMS → LOCATE AUTHORITY → INSPECT EVIDENCE → CLASSIFY STATE → DRAFT RESPONSE`
+
+The narrowest relevant repo/runtime evidence comes first. Distinguish already implemented, partial, not applicable, missing, and not yet verified. A third-party comment describing behavior already present is validation, not automatically a feature request.
+
+If the evidence was not checked, mark the response posture as `NOT REPO-VERIFIED` and do not state implementation as fact. If Juss says the reply was posted, do not automatically affirm it; first confirm that any material technical claim was evidence-grounded. Full contract: `references/public-technical-reply-evidence-gate.md`.
 
 ## Runtime First-Class invariant
 
