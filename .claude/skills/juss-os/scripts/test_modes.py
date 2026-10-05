@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
+import json
+from pathlib import Path
+import subprocess
+import sys
 import unittest
 
 import confess
 import truthmode
 from evidence_core import diagnose_runtime_boundary
+
+
+SCRIPT = Path(__file__).resolve().parent / "ultrathink.py"
 
 
 class TruthModeTests(unittest.TestCase):
@@ -60,6 +67,47 @@ class ConfessTests(unittest.TestCase):
         }]})
         self.assertEqual(len(out["buckets"]["KNOWN"]), 1)
         self.assertEqual(out["summary"]["overclaims"], 0)
+
+
+class CliEndToEndTests(unittest.TestCase):
+    def run_cli(self, mode, payload):
+        return subprocess.run(
+            [sys.executable, str(SCRIPT), mode, "--compact"],
+            input=json.dumps(payload),
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+
+    def test_truthmode_dispatcher_verified_path(self):
+        proc = self.run_cli("truthmode", {"claims": [{
+            "claim": "runtime answered",
+            "evidence": [{"source_kind": "runtime", "supports": True, "direct": True, "fresh": True}],
+        }]})
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        out = json.loads(proc.stdout)
+        self.assertEqual(out["mode"], "/truthmode")
+        self.assertEqual(out["claims"][0]["label"], "VERIFIED")
+
+    def test_truthmode_dispatcher_unknown_path_is_nonzero(self):
+        proc = self.run_cli("truthmode", {"claims": [{"claim": "producer is Cloudflare", "evidence": []}]})
+        self.assertEqual(proc.returncode, 1, proc.stderr)
+        out = json.loads(proc.stdout)
+        self.assertEqual(out["claims"][0]["label"], "UNKNOWN")
+
+    def test_confess_dispatcher_overclaim_fails_closed(self):
+        proc = self.run_cli("confess", {"claims": [{
+            "claim": "deployed",
+            "actual_label": "PARTIAL",
+            "attempted": True,
+            "claimed_state": "DEPLOYED",
+            "proven_state": "COMMITTED",
+        }]})
+        self.assertEqual(proc.returncode, 2, proc.stderr)
+        out = json.loads(proc.stdout)
+        self.assertEqual(out["mode"], "/confess")
+        self.assertEqual(out["summary"]["overclaims"], 1)
+        self.assertEqual(len(out["buckets"]["CLAIMED_TOO_EARLY"]), 1)
 
 
 if __name__ == "__main__":
