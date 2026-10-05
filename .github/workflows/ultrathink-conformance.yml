@@ -1,0 +1,28 @@
+name: ULTRATHINK conformance
+
+on:
+  push:
+    paths:
+      - '.claude/skills/**'
+      - '.github/workflows/ultrathink-conformance.yml'
+  pull_request:
+    paths:
+      - '.claude/skills/**'
+      - '.github/workflows/ultrathink-conformance.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  modes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile mode scripts
+        run: python -m compileall -q .claude/skills/juss-os/scripts
+      - name: Run conformance tests
+        working-directory: .claude/skills/juss-os/scripts
+        run: python -m unittest -v test_modes.py
