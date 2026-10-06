@@ -18,7 +18,7 @@ This repository is the first-party export home for reusable Juss operating skill
 
 Path: `.claude/skills/juss-os/`
 
-Law/runtime-governance kernel for agent work across Juss-owned repositories and the AI council. Current metadata is `v3.1` with status `MERGE-APPROVED EXPORT; CANONICALIZATION UNKNOWN pending exact FOUNDER ACCEPT`.
+Law/runtime-governance kernel for agent work across Juss-owned repositories and the AI council. Current metadata is `v3.1.1` with status `MERGE-APPROVED EXPORT; CANONICALIZATION UNKNOWN pending exact FOUNDER ACCEPT`.
 
 ### `/truthmode`
 
@@ -65,8 +65,8 @@ Prospective authority and forensic attribution stay separate. An executor may be
 ```bash
 cd .claude/skills/juss-os/scripts
 python -m unittest -v test_modes.py
-python ultrathink.py truthmode --input /path/to/truth.json
-python ultrathink.py confess --input /path/to/confess.json
+python .claude/skills/juss-os/scripts/ultrathink.py truthmode --input /path/to/truth.json
+python .claude/skills/juss-os/scripts/ultrathink.py confess --input /path/to/confess.json
 ```
 
 Both mode CLIs return JSON and non-zero exit codes when evidence is unresolved or lifecycle overclaim is detected, so they can gate CI/agent workflows.
