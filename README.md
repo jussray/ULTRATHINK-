@@ -54,6 +54,12 @@ Bounded creative triggers:
 
 Generic `ULTRATHINK` remains kernel-owned and does not directly trigger the creative module.
 
+### `juss-command-codex`
+
+Path: `.claude/skills/juss-command-codex/`
+
+Portable governed slash-command library (v0.1.0, `draft-first-party`). Twelve commands — `/swot`, `/businessmodel`, `/landingpage`, `/userstory`, `/bugreport`, `/changelog`, `/coldemail`, `/casestudy`, `/database`, `/architecture`, `/security`, `/codereview` — each a spec with intent, input, method, output contract, gate, redteam, and pass-if tests. It runs under `juss-os` inside repositories and stands alone as plain markdown on any council model. `scripts/validate_codex.py` enforces the contract in CI.
+
 ## Runtime attribution rule
 
 For runtime outcomes, preserve the exact request and exact observed response as immutable evidence. Diagnose the **last execution boundary proven to have received the request** and the **first forward transition that cannot be proven**. Do not attribute the result to a provider, proxy, worker, origin, model, or other actor from status codes, branding, message text, or provider-looking error wording alone.

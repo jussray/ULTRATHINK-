@@ -99,3 +99,12 @@ jobs:
 
           print('Juss AF skill contract: PASS')
           PY
+
+  validate-command-codex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate Juss Command Codex contract
+        run: python3 -I .claude/skills/juss-command-codex/scripts/validate_codex.py
