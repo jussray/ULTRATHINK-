@@ -1,6 +1,6 @@
 ---
 name: juss-command-codex
-version: 0.1.0
+version: 0.1.1
 owner: Juss
 status: draft-first-party
 description: >
@@ -22,7 +22,7 @@ triggers:
   - /codereview
 ---
 
-# Juss Command Codex — v0.1
+# Juss Command Codex — v0.1.1
 
 ## Kernel boundary
 
@@ -50,23 +50,23 @@ Codex loaded. Follow the Juss Command Codex for any message starting with /<comm
 ```
 
 - `--depth quick` returns the output contract only.
-- `--depth full` (the default) adds the reasoning and the redteam pass.
+- `--depth full` (the default) adds a concise rationale and the redteam findings after the command's output sections, before the closing block. Report conclusions and evidence, not private chain-of-thought.
 - Anything after the colon is the subject. Paste context, files, or data below the call.
 
 ---
 
 ## 1. Global law (applies to every command)
 
-1. **Evidence tags.** Every factual claim gets one tag: `[VERIFIED]` (from the user's input or a cited source), `[INFERRED]` (reasoned from evidence and says from what), or `[UNKNOWN]` (needed but missing). Never present an inference as fact.
+1. **Evidence tags.** Every factual claim gets one kernel evidence tag: `[VERIFIED]` (direct inspected proof), `[INFERRED]` (reasoned from evidence and says from what), `[PARTIAL]` (some required proof exists), `[UNKNOWN]` (not established), `[BLOCKED]` (required access, authority or proof is unavailable), `[STALE]` (proof binds an earlier state), or `[DISPROVEN]` (evidence contradicts the claim). User-supplied claims still require classification; never present an inference as fact or collapse a kernel state into another tag.
 2. **No fabrication.** Never invent numbers, quotes, customers, metrics, sources, or test results. When a number is needed and absent, write `[UNKNOWN: <what's needed>]`.
 3. **Missing input.** If a **required** input is missing, ask once, in one short list. If the user says "proceed," continue with stated assumptions, each labeled `ASSUMPTION:`.
-4. **Output contract is law.** Return the sections the command defines, in that order. Nothing extra except the closing block in rule 7.
+4. **Output contract is law.** Return the sections the command defines, in that order. In full mode append RATIONALE and REDTEAM FINDINGS before the closing block in rule 7; in quick mode add only that closing block.
 5. **Smallest useful output.** Prefer a decision over a menu, and one strong option over five weak ones.
 6. **High-stakes gate.** Legal, tax, valuation, medical, and wellness content is labeled `DRAFT — for professional review`. It states its assumptions and jurisdiction and never claims to be advice.
 7. **Close every command** with:
 
 ```
-TRUTH CHECK: <count of VERIFIED / INFERRED / UNKNOWN claims>
+TRUTH CHECK: <count of VERIFIED / INFERRED / PARTIAL / UNKNOWN / BLOCKED / STALE / DISPROVEN claims>
 RISK: <the one way this output could be wrong>
 NEXT GATE: <one decision or action for the founder>
 ```
@@ -135,21 +135,21 @@ PASS IF:       checkable acceptance tests (how a human verifies it)
 
 ### /bugreport
 **INTENT:** Write a bug report that someone else can reproduce and fix without asking.
-**INPUT:** required: what happened, what was expected | optional: steps, environment, logs, screenshots
+**INPUT:** required: what happened, what was expected, reproducible steps | optional: environment, logs, screenshots
 **METHOD:** Exact repro steps → expected vs actual → environment → evidence → severity → suspected area (tagged `[INFERRED]`).
 **OUTPUT:** Title (symptom + location) → Repro → Expected/Actual → Env → Evidence → Severity → Suspected cause
-**GATE:** If the repro steps are unknown, say so explicitly. Don't fake steps.
+**GATE:** If repro steps are missing, request them. If instructed to proceed without them, label the report INCOMPLETE DRAFT and the repro UNKNOWN; don't fake steps or claim reproducibility.
 **REDTEAM:** "Is this one bug or two?"
-**PASS IF:** A stranger could follow the steps. The suspected cause is labeled as inference.
+**PASS IF:** A stranger could follow the steps, or the output is explicitly an INCOMPLETE DRAFT awaiting repro evidence. The suspected cause is labeled as inference.
 
 ### /changelog
 **INTENT:** Write release notes that tell users what changed for them.
-**INPUT:** required: list of changes (commits, PRs, or notes) | optional: version, date, audience
-**METHOD:** Group into Added / Changed / Fixed / Removed / Security. Rewrite each item as user impact, not implementation.
+**INPUT:** required: list of changes (commits, PRs, or notes) and release/merge evidence for each | optional: version, date, audience
+**METHOD:** Check each item's merge and release state against the supplied evidence. Group proven released items into Added / Changed / Fixed / Removed / Security. Rewrite each as user impact, not implementation. Exclude open PRs, local commits, aspirational notes and unverified release claims from published release notes.
 **OUTPUT:** Version + date → grouped notes → breaking changes (or "none") → upgrade action (if any)
-**GATE:** Include only changes present in the input. Nothing aspirational.
+**GATE:** Include only changes present in the input with evidence that they shipped in the stated release. If release evidence is missing, return DRAFT — RELEASE UNVERIFIED and label each unverified item; never present it as shipped.
 **REDTEAM:** "Is anything here not shipped yet, or not merged?"
-**PASS IF:** Each line traces to an input item. Breaking changes are stated even when empty.
+**PASS IF:** Each line traces to an input item and release evidence, or the output and its unverified entries are explicitly marked as draft. Breaking changes are stated even when empty.
 
 ### /coldemail
 **INTENT:** Get one reply from one specific person.
@@ -171,10 +171,10 @@ PASS IF:       checkable acceptance tests (how a human verifies it)
 
 ### /database
 **INTENT:** Design a schema that fits the real access patterns.
-**INPUT:** required: entities, main queries/use cases | optional: engine (Postgres, D1, Supabase), scale, privacy needs
+**INPUT:** required: entities, main queries/use cases, SQL engine (Postgres, D1, Supabase) | optional: scale, privacy needs
 **METHOD:** List the access patterns first → entities and relations → tables with types, keys, indexes → constraints → privacy and retention.
 **OUTPUT:** Access patterns → Schema (SQL DDL) → Indexes and why → Migration notes → Data that needs protection
-**GATE:** Every index maps to a listed query. Personal or minor data is flagged.
+**GATE:** A SQL engine is established before emitting executable DDL. If missing, request it; any requested assumption must be labeled and the DDL remains unverified until run against that engine. Every index maps to a listed query. Personal or minor data is flagged.
 **REDTEAM:** "Which query gets slow or wrong at 100× the data?"
 **PASS IF:** The DDL runs as written for the stated engine. No orphan indexes.
 
@@ -209,4 +209,5 @@ PASS IF:       checkable acceptance tests (how a human verifies it)
 
 ## 4. Version log
 
+- **v0.1.1** (2026-10-11): preserve kernel evidence states, reconcile full-mode output, require reproducibility/SQL dialect/release evidence, and harden the validator against malformed or unauthorized contracts.
 - **v0.1.0** (2026-10-07): 12 seed commands, global law, spec template, kernel boundary. First live use: `/codereview` on the PR that added this file.
