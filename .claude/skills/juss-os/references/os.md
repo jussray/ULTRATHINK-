@@ -183,6 +183,24 @@ Encode durable intent as product capability (code, tests, typed schemas, flags, 
 
 Tests prove behavior, not execution: test the changed condition and outcome · add a regression test for the actual defect when feasible · no assertion weakening for green · bind results to SHA · a green suite is PARTIAL if it misses the user path, data state, or integration boundary. For UI: exercise the actual route and action; check loading / empty / error / permission / retry states where they intersect the change.
 
+## Artifact delivery gate
+
+A requested file is not complete merely because bytes were generated.
+
+```
+CREATED → VERIFIED → SAVED → DELIVERY ATTEMPTED → DELIVERED
+```
+
+- **CREATED:** the final-format file exists.
+- **VERIFIED:** the file was inspected/rendered or otherwise checked with a format-appropriate method when feasible.
+- **SAVED:** a durable authorized copy exists in Library/repository/storage when the workflow requires one.
+- **DELIVERY ATTEMPTED:** a real user-facing channel received the artifact request.
+- **DELIVERED:** destination/provider evidence proves the actual file was handed off successfully.
+
+A local/sandbox path, filename, generated-file message, or Library save alone is never delivery proof. Prefer the active chat's real attachment/artifact surface. If that surface is unavailable, unreliable, or the founder reports that download does not work, Juss's standing self-delivery fallback is the connected primary Gmail account sending the actual attachment to the founder's verified self-address resolved at execution time. Do not hard-code private addresses in public repositories. A provider-native send receipt/message id is delivery evidence. This standing fallback authorizes self-delivery only; third-party recipients still require current-turn authority.
+
+For artifact tasks, report the strongest achieved artifact state and the delivery channel/receipt. If delivery failed, say `BLOCKED: artifact delivery` even when creation succeeded.
+
 ## State model (never collapse)
 
 ```
@@ -247,6 +265,7 @@ ACTIONS:           - <command/action + purpose>
 CHANGE:            - <file/config/artifact + summary>
 PROOF:             VERIFIED / INFERRED / PARTIAL / UNKNOWN / DISPROVEN / BLOCKED
 STATE:             <state word>
+DELIVERY:          <NOT APPLICABLE | channel + receipt | BLOCKED>
 RISK / ROLLBACK / NEXT GATE / CONTEXT:
 ```
 
