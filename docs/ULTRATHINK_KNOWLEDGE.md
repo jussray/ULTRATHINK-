@@ -38,7 +38,7 @@ Evidence labels used below: **VERIFIED** (a source in this repo or a dated recor
 - **80/20**: prioritize the few changes that carry most of the value. Name recorded (2026-10-18). Source skill (`prioritize/80-20` in the founder-control-room skill suite) is not imported here: gap.
 - **Hormozi**: offer and value-framing lens. Named as a strategic lens in memory (2026-10-18). Source skill (`delivery/hormozi`) is not imported here: gap.
 - **lindymode**: the Lindy lens applied as a mode. Used in the `/goalfix` operating stack.
-- **proofmode**: name recorded (2026-10-18). Definition UNKNOWN. The founder should state it before any agent treats it as a rule.
+- **proofmode**: an evidence-plane mode, listed with truth and confess. Founder-control-room docs say it "changes evidence/uncertainty discipline only" (grep of `.md` files in founder-control-room, 2026-10-18). Its link to a required status check is a separate governance question and does not grant authority. A full definition is still UNKNOWN until the founder confirms it.
 - **Mode and lens set (asked to remember, 2026-10-18)**: 80/20, OODA, Redteam, lindymode, proofmode, truthmode, confess, hormozi, plus garyvee, futureyou, steal, goal+loop, btw, Gates, Musk. Only the entries above with a stated definition are rules; the rest are names until imported.
 
 ## 3. Reasoning stack and depth
