@@ -92,3 +92,9 @@ If the finish line cannot be truthfully reached, return `{"status": "incomplete"
 - **Receipt:** write the outcome as a handoff receipt under `futureyou-me-v10`, or state that it was not written.
 
 Strategic choices also list: Goal / Known / Inferred / Unknown / Options / Recommendation / Confidence / Required evidence.
+
+## Runtimes
+- **Claude Code with shell and git:** the full verification ladder is available. Run the real-browser step with Playwright where a browser is installed. If none is installed, mark the change UNVERIFIED.
+- **Cowork or another shell-less runtime:** no commit is possible. Output the diff as text, mark `COMMIT BLOCKED`, and name the commit the founder should make.
+- **Chat-only runtimes:** repository files are unavailable unless the founder pastes them. Work only on pasted evidence, and tag every file-dependent claim UNKNOWN until its text is pasted.
+- **Push refused:** the commit exists locally at most. Report the head SHA, the refusal and the patch file. Do not retry through a different remote.
