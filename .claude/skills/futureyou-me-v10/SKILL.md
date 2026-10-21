@@ -19,7 +19,7 @@ This skill owns three jobs and no others:
 It does not build, challenge, verify or format named outputs. Those belong to `godmode-devil-ultrathink` (build and challenge) and `juss-command-codex` (named one-shot outputs).
 
 ## Inheritance
-Load the `juss-os` skill first when the platform exposes it, together with the repository's own agent instructions (AGENTS.md, CLAUDE.md, or the platform equivalent). The stricter rule wins. If `juss-os` is unavailable, tag every factual claim (VERIFIED, INFERRED, PARTIAL, UNKNOWN, BLOCKED, STALE or DISPROVEN), never fabricate, and act only within the authority the founder granted in this conversation.
+Read the repository's agent instructions first (AGENTS.md, CLAUDE.md, or the platform equivalent), then load the `juss-os` skill when the platform exposes it. The stricter rule wins. If `juss-os` is unavailable, tag every factual claim (VERIFIED, INFERRED, PARTIAL, UNKNOWN, BLOCKED, STALE or DISPROVEN), never fabricate, and act only within the authority the founder granted in this conversation.
 
 ## Intake
 1. Quote the founder's exact words.
@@ -87,3 +87,9 @@ Ask one question and stop only when the decision owner is unknown, or when no au
 - **ROUTE:** the skill that executes, or NONE, with the reason.
 - **RECEIPT:** fingerprint and proof cookie, or NOT WRITTEN.
 - **NEXT GATE:** one action.
+
+## Runtimes
+- **Claude Code:** route to `godmode-devil-ultrathink` and `juss-command-codex` by name, and read `juss-os` from `.claude/skills/juss-os/`. Write the handoff receipt to the PR thread or a repository file when write access exists.
+- **Cowork, or any runtime that has only this skill text:** route by name. If a target skill is not installed, output `ROUTE: NOT INSTALLED: <name>` and stop before any state change.
+- **Chat-only runtimes:** the handoff receipt is the reply text. Mark it `NOT PERSISTED` so a later session does not treat it as stored.
+- **Resume check:** a receipt is only as current as the head it names. Re-read that head with the runtime's own tools. If the runtime has none, state the head as UNVERIFIED.
