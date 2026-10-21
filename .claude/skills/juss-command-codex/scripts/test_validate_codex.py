@@ -34,7 +34,7 @@ class CodexContractTests(unittest.TestCase):
     def test_complete_skill_passes(self):
         with contextlib.redirect_stdout(io.StringIO()) as output:
             validator.main(self.skill)
-        self.assertIn("PASS (12 commands)", output.getvalue())
+        self.assertIn("PASS (14 commands)", output.getvalue())
 
     def test_canonical_status_cannot_be_inferred(self):
         self.reject(self.text.replace("status: draft-first-party", "status: canonical-first-party"), "status must")

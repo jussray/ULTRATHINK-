@@ -1,6 +1,6 @@
 ---
 name: juss-command-codex
-version: 0.1.1
+version: 0.2.0
 owner: Juss
 status: draft-first-party
 description: >
@@ -20,9 +20,11 @@ triggers:
   - /architecture
   - /security
   - /codereview
+  - /attack
+  - /5w1h
 ---
 
-# Juss Command Codex — v0.1.1
+# Juss Command Codex — v0.2.0
 
 ## Kernel boundary
 
@@ -205,9 +207,37 @@ PASS IF:       checkable acceptance tests (how a human verifies it)
 **REDTEAM:** "How could this pass CI and still break production?"
 **PASS IF:** One verdict. Every finding has a location. Skipped tests are called out.
 
+### /attack
+**INTENT:** Find how a subject can fail or be abused before it ships, and the proof state of each defense.
+**INPUT:** required: the subject (system, change or plan) and what it exposes | optional: auth model, data touched, provider or runtime involved
+**METHOD:**
+1. Name the boundary: who or what can call it, what it reads, and what it writes.
+2. List ten concrete attacks. Include at least one each of: unauthorized access, stale or replayed state, mutation through a read path, credential or private-data leakage, and success without an audit trail.
+3. For each attack, state the defense it requires.
+4. Tag the proof of each defense: `[VERIFIED]` (exact-head test or receipt), `[INFERRED]`, `[UNKNOWN]`, `[BLOCKED]` (provider or access missing), or `[STALE]` (proof binds an earlier head).
+
+**OUTPUT:** Attack Ten table (#, attack, required defense, proof tag) → Rows that block release → Top fix to do now
+**GATE:** A defense that depends on a live provider or runtime is never `[VERIFIED]` from source tests alone. Defensive only, the same as /security.
+**REDTEAM:** "Which row would I have marked green without running the real path?"
+**PASS IF:** Exactly ten rows. Each has a defense and a proof tag. Source proof and runtime proof are never merged into one tag.
+
+### /5w1h
+**INTENT:** Fix who, what, where, when, why and how before a nontrivial action, so the action has a named owner and a rollback.
+**INPUT:** required: the proposed action | optional: repo, environment, deadline, evidence
+**METHOD:** Write one line per field (Who, What, Where, When, Why, How), each with an evidence tag. Then apply the verdict rules in order:
+1. GO: every field is answered and none is BLOCKED or STALE.
+2. HOLD: Who or How is `[UNKNOWN]`; or any field is BLOCKED or STALE; or two or more fields are `[UNKNOWN]`.
+3. ASK: exactly one field is `[UNKNOWN]`, it is What, Where, When or Why, nothing is BLOCKED or STALE, and only the founder can supply the missing fact.
+
+**OUTPUT:** Six-row table (field, answer, tag) → The one missing fact (ASK only) → Verdict: GO, HOLD or ASK
+**GATE:** A field with no source is `[UNKNOWN]`, never guessed.
+**REDTEAM:** "Who would be blamed if this went wrong, and does the answer name them?"
+**PASS IF:** All six fields are answered or marked `[UNKNOWN]`. The verdict is exactly one of GO, HOLD or ASK, and it follows the three rules above in order.
+
 ---
 
 ## 4. Version log
 
+- **v0.2.0** (2026-10-21): add `/attack` (Attack Ten matrix with proof tags) and `/5w1h` (six-field pre-action gate with ordered GO / HOLD / ASK rules).
 - **v0.1.1** (2026-10-11): preserve kernel evidence states, reconcile full-mode output, require reproducibility/SQL dialect/release evidence, and harden the validator against malformed or unauthorized contracts.
 - **v0.1.0** (2026-10-07): 12 seed commands, global law, spec template, kernel boundary. First live use: `/codereview` on the PR that added this file.
