@@ -241,3 +241,9 @@ PASS IF:       checkable acceptance tests (how a human verifies it)
 - **v0.2.0** (2026-10-21): add `/attack` (Attack Ten matrix with proof tags) and `/5w1h` (six-field pre-action gate with ordered GO / HOLD / ASK rules).
 - **v0.1.1** (2026-10-11): preserve kernel evidence states, reconcile full-mode output, require reproducibility/SQL dialect/release evidence, and harden the validator against malformed or unauthorized contracts.
 - **v0.1.0** (2026-10-07): 12 seed commands, global law, spec template, kernel boundary. First live use: `/codereview` on the PR that added this file.
+
+## 5. Runtimes
+- **Shell with python3 (Claude Code, or any sandbox that runs code):** run the contract check before publishing a codex change: `python3 -I scripts/validate_codex.py` and `python3 -I scripts/test_validate_codex.py`. Expect `PASS (14 commands)` and every test OK. These are the same two commands the `validate-command-codex` CI job runs.
+- **No shell (chat, or Cowork without a shell):** a command is still usable. Check it by hand against its `PASS IF` line and label the result `[PARTIAL]`, never `PASS`.
+- **Every runtime:** the closing block (`TRUTH CHECK`, `RISK`, `NEXT GATE`) is required whether or not a shell exists.
+- **Porting to another runtime:** copy the spec text only. A command never needs a runtime-specific tool. If it seems to, the spec is wrong.
