@@ -6,11 +6,12 @@ This repository is the first-party export home for reusable Juss operating skill
 
 ## Start here
 
-1. Load `.claude/skills/juss-os/SKILL.md` first for authority, evidence, lifecycle, rollback, receipt, merge/deploy, and verification gates.
-2. Read `.claude/skills/juss-os/references/os.md`, `runtime-first-class.md`, and `acceptance.md` for the inherited law, runtime-attribution boundary, and acceptance state.
-3. Read the target repository's own `CLAUDE.md`, `AGENTS.md`, and `.claude/` instructions. Stricter project rules win.
-4. Load specialized skills only when their bounded job applies.
-5. Never inherit verification, runtime attribution, or authority from another repository, project, model, receipt, or environment.
+1. Read the repository agent entry first: `AGENTS.md` for any runtime, or `CLAUDE.md` for Claude Code. Repository agent docs come first in the precedence order.
+2. Load `.claude/skills/juss-os/SKILL.md` for authority, evidence, lifecycle, rollback, receipt, merge/deploy, and verification gates.
+3. Read `.claude/skills/juss-os/references/os.md`, `runtime-first-class.md`, and `acceptance.md` for the inherited law, runtime-attribution boundary, and acceptance state.
+4. Read the target repository's own `CLAUDE.md`, `AGENTS.md`, and `.claude/` instructions. Stricter project rules win.
+5. Load specialized skills only when their bounded job applies.
+6. Never inherit verification, runtime attribution, or authority from another repository, project, model, receipt, or environment.
 
 ## What is implemented
 
