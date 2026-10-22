@@ -54,6 +54,12 @@ Bounded creative triggers:
 
 Generic `ULTRATHINK` remains kernel-owned and does not directly trigger the creative module.
 
+### `godmode-devil-ultrathink`
+
+Path: `.claude/skills/godmode-devil-ultrathink/`
+
+Build-and-challenge loop for `/godmode` and `/devil`: premise attack, the smallest focused fix, selected-path attack, real-path verification, and commit-only-with-evidence. Runs under `juss-os`. Intake, routing, 5W1H, Attack Ten, receipts and merge approval are defined in `futureyou-me-v10`. Bare `ULTRATHINK` stays kernel-owned. More intelligence never means more authority.
+
 ## Runtime attribution rule
 
 For runtime outcomes, preserve the exact request and exact observed response as immutable evidence. Diagnose the **last execution boundary proven to have received the request** and the **first forward transition that cannot be proven**. Do not attribute the result to a provider, proxy, worker, origin, model, or other actor from status codes, branding, message text, or provider-looking error wording alone.
