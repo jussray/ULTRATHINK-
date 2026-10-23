@@ -16,7 +16,7 @@ Never ask the founder to restate any of these files.
 | --- | --- | --- | --- |
 | `juss-os` | none (kernel) | authority, evidence, gates, receipts | on main |
 | `futureyou-me-v10` | `/futureyou`, `/intent`, `/handoff` | intake, routing, 5W1H, Attack Ten taxonomy, handoff receipt, approval scope | open draft PR #5, not on main |
-| `godmode-devil-ultrathink` | `/godmode`, `/devil` | challenge, fix, verify, commit with evidence | open draft PR #7, not on main |
+| `godmode-devil-ultrathink` | `/godmode`, `/devil` | challenge, fix, verify, commit with evidence | on main (PR #7, merged 2026-10-22) |
 | `juss-command-codex` | `/swot` to `/codereview`, `/attack`, `/5w1h` | named one-shot command specs | open PR #4, not on main |
 | `confess`, `truthmode`, `reasoning-stack`, `juss-af-skills-pack` | see each file | self-audit, evidence, decision lenses, creative module | on main |
 
