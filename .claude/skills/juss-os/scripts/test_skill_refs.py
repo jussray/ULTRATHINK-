@@ -24,5 +24,16 @@ class SkillPathRefs(unittest.TestCase):
         self.assertEqual([], broken)
 
 
+class SkillDependencies(unittest.TestCase):
+    def test_unmerged_skill_dependency_is_declared(self):
+        undeclared = []
+        for skill in sorted(SKILLS.glob("*/SKILL.md")):
+            text = skill.read_text(encoding="utf-8")
+            if "`futureyou-me-v10`" in text and not (SKILLS / "futureyou-me-v10" / "SKILL.md").exists():
+                if "not on main" not in text:
+                    undeclared.append(str(skill.relative_to(REPO)))
+        self.assertEqual([], undeclared)
+
+
 if __name__ == "__main__":
     unittest.main()
