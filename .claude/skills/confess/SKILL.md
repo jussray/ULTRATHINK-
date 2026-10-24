@@ -64,4 +64,4 @@ Never convert an UNKNOWN into a confession of failure. Unknown means not establi
 python3 .claude/skills/juss-os/scripts/ultrathink.py confess --input confess.json
 ```
 
-See `scripts/test_modes.py` for the binding JSON schema.
+See `.claude/skills/juss-os/scripts/test_modes.py` for the binding JSON schema.
