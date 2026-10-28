@@ -59,6 +59,11 @@ Generic `ULTRATHINK` remains kernel-owned and does not directly trigger the crea
 Path: `.claude/skills/juss-command-codex/`
 
 Portable governed slash-command library (v0.1.1, `draft-first-party`). Twelve commands — `/swot`, `/businessmodel`, `/landingpage`, `/userstory`, `/bugreport`, `/changelog`, `/coldemail`, `/casestudy`, `/database`, `/architecture`, `/security`, `/codereview` — each a spec with intent, input, method, output contract, gate, redteam, and pass-if tests. It runs under `juss-os` inside repositories and stands alone as plain markdown on any council model. `scripts/validate_codex.py` enforces the contract in CI, and `scripts/test_validate_codex.py` verifies that malformed contracts are rejected.
+### `godmode-devil-ultrathink`
+
+Path: `.claude/skills/godmode-devil-ultrathink/`
+
+Build-and-challenge loop for `/godmode` and `/devil`: premise attack, the smallest focused fix, selected-path attack, real-path verification, and commit-only-with-evidence. Runs under `juss-os`. Intake, routing, 5W1H, Attack Ten, receipts and merge approval are defined in `futureyou-me-v10`. Bare `ULTRATHINK` stays kernel-owned. More intelligence never means more authority.
 
 ## Runtime attribution rule
 
