@@ -31,6 +31,7 @@ PR #1 merge approval and formal canonicalization are separate facts. Read `refer
 
 1. Read `references/os.md` in full as the inherited v3 base.
 2. Read `references/runtime-first-class.md` and `references/acceptance.md`.
+   Then read `references/operator-addendum.md` (FOUNDER-ACCEPTED 2026-10-18): model routing, A–E approval line, done-when, quiet rule, handover. juss-os wins on any conflict.
 3. Read `references/public-technical-reply-evidence-gate.md` before drafting, approving, or reinforcing a public technical reply about a Juss-owned project.
 4. Load `.claude/skills/truthmode/SKILL.md`, `.claude/skills/confess/SKILL.md`, and `.claude/skills/reasoning-stack/SKILL.md` when those modes/lenses apply.
 5. Read the target repo's own agent docs (`CLAUDE.md`, `AGENTS.md`, `.claude/`). Never ask Juss to restate them.
