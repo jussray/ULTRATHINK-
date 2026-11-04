@@ -25,6 +25,6 @@ jobs:
         run: python -m compileall -q .claude/skills/juss-os/scripts
       - name: Run conformance tests
         working-directory: .claude/skills/juss-os/scripts
-        run: python -m unittest -v test_modes.py test_evidence_ledger.py
+        run: python -m unittest -v test_modes.py test_evidence_ledger.py test_receipt_integrity.py
       - name: Run receipt evidence-integrity regression tests
         run: python -m unittest discover -s .claude/skills/tests -p 'test_*.py' -v
