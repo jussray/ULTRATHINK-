@@ -5,10 +5,10 @@ on:
     paths:
       - '.claude/skills/**'
       - '.github/workflows/ultrathink-conformance.yml'
+  # Required PR checks must run even when changes do not touch skill files.
   pull_request:
-    paths:
-      - '.claude/skills/**'
-      - '.github/workflows/ultrathink-conformance.yml'
+    branches:
+      - main
 
 permissions:
   contents: read
