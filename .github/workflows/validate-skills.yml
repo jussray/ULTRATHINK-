@@ -1,10 +1,10 @@
 name: Validate skills
 
 on:
+  # Required PR checks must run for every proposed merge into main.
   pull_request:
-    paths:
-      - '.claude/skills/**'
-      - '.github/workflows/validate-skills.yml'
+    branches:
+      - main
   push:
     branches:
       - main
