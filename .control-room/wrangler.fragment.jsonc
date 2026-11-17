@@ -1,0 +1,26 @@
+// Cloudflare Worker settings for ULTRATHINK integration.
+// This is a reusable fragment, not a deployable Worker manifest.
+// Merge these keys into the Wrangler config of the Worker that consumes ULTRATHINK.
+// Cloudflare uses observability.issues (not issue_detection); requires Wrangler >= 4.134.0.
+{
+  "vars": {
+    "GITHUB_REF": "main",
+    "GITHUB_REPO": "https://github.com/jussray/ULTRATHINK-"
+  },
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "invocation_logs": true,
+      "persist": true
+    },
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true
+    },
+    "issues": {
+      "enabled": true
+    }
+  }
+}
