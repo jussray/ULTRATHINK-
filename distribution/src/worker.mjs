@@ -159,7 +159,15 @@ export function validateSkill(name, source, references, sourceSha, acceptance = 
     }
     status = canonicalBy ? 'canonical' : 'draft';
   } else {
-    const bound = (front.metadata?.parent === 'juss-os') || /under [`']?juss-os[`']?/i.test(source) || /subordinate.+juss-os/i.test(source);
+    // Inheritance may be expressed in the skill's explicit contract rather than frontmatter.
+    // Require both an affirmative kernel load and a strict precedence rule; a name mention is not binding.
+    const inheritanceSection = source.split(/^## Inheritance\s*$/m)[1]?.split(/^## /m)[0] || '';
+    const explicitLoad = /\bload the [`']juss-os[`'] skill\b/i.test(inheritanceSection) &&
+      /\bstricter rule wins\b/i.test(inheritanceSection);
+    const bound = (front.metadata?.parent === 'juss-os') ||
+      /under [`']?juss-os[`']?/i.test(source) ||
+      /subordinate.+juss-os/i.test(source) ||
+      explicitLoad;
     test('law_binding_exists', bound);
   }
   if (name === 'juss-af-skills-pack') {
