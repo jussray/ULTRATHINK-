@@ -10,7 +10,7 @@ triggers:
 # /godmode · /devil: Challenge, Build, Verify
 
 ## Scope
-This skill handles change work: premise challenge, one focused fix, verification, and commit. It does not own intake, routing, the 5W1H gate, the Attack Ten taxonomy, receipts or merge approval. Those are defined in `futureyou-me-v10`. This skill runs under `juss-os`, which has final authority over every gate here.
+This skill handles change work: premise challenge, one focused fix, verification, and commit. It does not own intake, routing, the 5W1H gate, the Attack Ten taxonomy, receipts or merge approval. Those are defined in `futureyou-me-v10`, which is not on main yet, so on main their approval scope is UNKNOWN and this skill does not merge until it lands. This skill runs under `juss-os`, which has final authority over every gate here.
 
 Bare ULTRATHINK is kernel-owned in this repository and is not a trigger of this skill. If standalone `godmode` or `ultrathink` copies are installed elsewhere, retire them so the triggers do not collide.
 

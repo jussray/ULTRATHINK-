@@ -60,4 +60,4 @@ DECISION
 python3 .claude/skills/juss-os/scripts/ultrathink.py truthmode --input truth.json
 ```
 
-Input is JSON with `claims`, optional `contradictions`, and optional `runtime`. See tests in `scripts/test_modes.py` for the binding schema.
+Input is JSON with `claims`, optional `contradictions`, and optional `runtime`. See tests in `.claude/skills/juss-os/scripts/test_modes.py` for the binding schema.
