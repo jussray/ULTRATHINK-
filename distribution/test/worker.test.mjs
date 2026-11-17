@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
-import worker, { parseFrontmatter, validateSkill, refreshCurrent } from '../src/worker.mjs';
+import worker, { parseFrontmatter, validateSkill, refreshCurrent, normalizeGithubRepo } from '../src/worker.mjs';
 
 const FIRST = 'f'.repeat(40);
 const SECOND = 'e'.repeat(40);
@@ -263,4 +263,39 @@ test('explicit inheritance text binds to juss-os without accepting a mere mentio
   assert.throws(() => validateSkill('futureyou-me-v10', source.replace('load the `juss-os` skill', 'mention the `juss-os` skill'), {}, KERNEL_BLOB), /validation_law_binding_exists/);
   assert.throws(() => validateSkill('futureyou-me-v10', source.replace('The stricter rule wins.', 'The local rule is optional.'), {}, KERNEL_BLOB), /validation_law_binding_exists/);
   assert.throws(() => validateSkill('futureyou-me-v10', source.replace('## Inheritance', '## Notes'), {}, KERNEL_BLOB), /validation_law_binding_exists/);
+});
+
+test('repository URL bindings normalize safely and reject untrusted paths', () => {
+  assert.equal(normalizeGithubRepo('jussray/ULTRATHINK-'), 'jussray/ULTRATHINK-');
+  assert.equal(normalizeGithubRepo('https://github.com/jussray/ULTRATHINK-'), 'jussray/ULTRATHINK-');
+  assert.equal(normalizeGithubRepo('https://github.com/jussray/ULTRATHINK-/'), 'jussray/ULTRATHINK-');
+  for (const rejected of [
+    'https://github.evil.test/jussray/ULTRATHINK-',
+    'https://github.com@evil.test/jussray/ULTRATHINK-',
+    'https://github.com/jussray/ULTRATHINK-?token=secret',
+    'https://github.com/jussray/ULTRATHINK-/subpath',
+    'jussray/../ULTRATHINK-', 'https://github.com/jussray/..',
+    'http://github.com/jussray/ULTRATHINK-'
+  ]) {
+    assert.throws(() => normalizeGithubRepo(rejected), /invalid_repo_configuration/, rejected);
+  }
+});
+
+test('full GitHub URL binding handles matching signed webhook without exposing URL in snapshot identity', async () => {
+  const fixture = makeFixture();
+  const env = { ...makeEnv(), GITHUB_REPO: 'https://github.com/jussray/ULTRATHINK-' };
+  const original = globalThis.fetch;
+  globalThis.fetch = gitFetchFor(fixture);
+  try {
+    const response = await worker.fetch(pushRequest(FIRST), env);
+    assert.equal(response.status, 200);
+    const payload = await response.json();
+    assert.equal(payload.repo_sha, FIRST);
+    const current = await call(env, '/api/v1/skills');
+    assert.equal(current.response.status, 200);
+    assert.equal(current.json.repo, 'jussray/ULTRATHINK-');
+    assert.equal(current.json.repo_sha, FIRST);
+  } finally {
+    globalThis.fetch = original;
+  }
 });
