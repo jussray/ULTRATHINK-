@@ -26,3 +26,17 @@ test('checked-out skill tree remains compatible with distribution validation', {
   assert.ok(good.includes('truthmode'));
   assert.ok(good.includes('juss-af-skills-pack'));
 });
+
+test('distribution Worker source config preserves repository and observability contract', () => {
+  const config = JSON.parse(readFileSync(new URL('../wrangler.jsonc', import.meta.url), 'utf8'));
+  assert.equal(config.name, 'juss-distribution');
+  assert.equal(config.vars.GITHUB_REPO, 'https://github.com/jussray/ULTRATHINK-');
+  assert.equal(config.vars.GITHUB_REF, 'main');
+  assert.deepEqual(config.observability, {
+    enabled: true,
+    redact_query_string: true,
+    logs: { enabled: true, head_sampling_rate: 1, invocation_logs: true, persist: true },
+    traces: { enabled: true, head_sampling_rate: 1, persist: true },
+    issues: { enabled: true }
+  });
+});
