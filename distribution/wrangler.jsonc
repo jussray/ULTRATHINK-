@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "juss-distribution",
+  "main": "src/worker.mjs",
+  "compatibility_date": "2026-11-17",
+  "workers_dev": false,
+  "vars": {
+    "GITHUB_REPO": "jussray/ULTRATHINK-",
+    "GITHUB_REF": "main"
+  },
+  "kv_namespaces": [
+    { "binding": "SKILL_CACHE", "id": "REPLACE_WITH_EXISTING_OR_NEW_KV_NAMESPACE_ID" }
+  ],
+  "ratelimits": [
+    { "name": "RATE_LIMITER", "namespace_id": "1001", "simple": { "limit": 1000, "period": 60 } }
+  ],
+  "triggers": { "crons": ["0 * * * *"] }
+}
