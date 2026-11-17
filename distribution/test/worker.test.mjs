@@ -228,3 +228,22 @@ test('admin invalidation rejects wrong revision and missing security bindings fa
     assert.equal(options.response.status, 204);
   } finally { globalThis.fetch = original; }
 });
+
+test('reading an older pinned SHA does not roll the active version pointer backward', async () => {
+  const fixture = makeFixture(); const env = makeEnv(); const original = globalThis.fetch; globalThis.fetch = gitFetchFor(fixture);
+  try {
+    await refreshCurrent(env);
+    fixture.head = SECOND;
+    const acceptanceFile = fixture.files.get('.claude/skills/juss-os/references/acceptance.md');
+    acceptanceFile.content += `\nFounder-Canonicalized: 2026-11-17T12:00:00Z | v3.1.1 @ ${KERNEL_BLOB}`;
+    acceptanceFile.sha = 'd'.repeat(40);
+    await refreshCurrent(env);
+    assert.equal((await env.SKILL_CACHE.get('version:juss-os:3.1.1', 'json')).repo_sha, SECOND);
+    await env.SKILL_CACHE.delete(`skill:juss-os:${FIRST}`); // Force a historical immutable refetch.
+    const pinned = await call(env, `/api/v1/skills/juss-os/sha/${FIRST}`);
+    assert.equal(pinned.response.status, 200);
+    assert.equal(pinned.json.repo_sha, FIRST);
+    assert.equal((await env.SKILL_CACHE.get('version:juss-os:3.1.1', 'json')).repo_sha, SECOND);
+    assert.equal((await env.SKILL_CACHE.get('snapshot:current')), SECOND);
+  } finally { globalThis.fetch = original; }
+});

@@ -3,16 +3,16 @@
   "name": "juss-distribution",
   "main": "src/worker.mjs",
   "compatibility_date": "2026-11-17",
-  "workers_dev": false,
+  "workers_dev": true,
   "vars": {
     "GITHUB_REPO": "jussray/ULTRATHINK-",
     "GITHUB_REF": "main"
   },
   "kv_namespaces": [
-    { "binding": "SKILL_CACHE", "id": "REPLACE_WITH_EXISTING_OR_NEW_KV_NAMESPACE_ID" }
+    { "binding": "SKILL_CACHE", "id": "fb2ef67cea6d46fc876d4c36932f30e1" }
   ],
   "ratelimits": [
-    { "name": "RATE_LIMITER", "namespace_id": "1001", "simple": { "limit": 1000, "period": 60 } }
+    { "name": "RATE_LIMITER", "namespace_id": "573921", "simple": { "limit": 1000, "period": 60 } }
   ],
   "triggers": { "crons": ["0 * * * *"] }
 }

@@ -243,18 +243,22 @@ export async function assembleSnapshot(env, ref = null) {
 async function storeSnapshot(env, snapshot, setCurrent = false) {
   if (!env.SKILL_CACHE) throw new ServiceError('missing_kv_binding', 503);
   const { repo_sha: repoSha, skills } = snapshot;
-  // Immutable snapshot first. A new pointer is published only after the complete snapshot is stored.
-  await env.SKILL_CACHE.put(`snapshot:${repoSha}`, JSON.stringify(snapshot));
-  // Preflight all version immutability checks before writing any mutable version mapping.
-  for (const skill of Object.values(skills)) {
-    const previous = await env.SKILL_CACHE.get(`version:${skill.name}:${skill.version}`, 'json');
-    if (previous && previous.package_sha256 !== skill.package_sha256) throw new ServiceError('version_requires_bump', 409, { skill: skill.name });
+  // Historical SHA lookups must never mutate the live version-to-commit mapping.
+  // Preflight mutable version mappings before publishing a new current snapshot.
+  if (setCurrent) {
+    for (const skill of Object.values(skills)) {
+      const previous = await env.SKILL_CACHE.get(`version:${skill.name}:${skill.version}`, 'json');
+      if (previous && previous.package_sha256 !== skill.package_sha256) throw new ServiceError('version_requires_bump', 409, { skill: skill.name });
+    }
   }
+  await env.SKILL_CACHE.put(`snapshot:${repoSha}`, JSON.stringify(snapshot));
   for (const skill of Object.values(skills)) {
     await env.SKILL_CACHE.put(`skill:${skill.name}:${repoSha}`, JSON.stringify(skill));
-    await env.SKILL_CACHE.put(`version:${skill.name}:${skill.version}`, JSON.stringify({ repo_sha: repoSha, package_sha256: skill.package_sha256 }));
   }
   if (setCurrent) {
+    for (const skill of Object.values(skills)) {
+      await env.SKILL_CACHE.put(`version:${skill.name}:${skill.version}`, JSON.stringify({ repo_sha: repoSha, package_sha256: skill.package_sha256 }));
+    }
     await env.SKILL_CACHE.put('snapshot:current', repoSha);
     await env.SKILL_CACHE.put('snapshot:last_good', repoSha);
   }
