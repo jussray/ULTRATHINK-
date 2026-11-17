@@ -247,3 +247,20 @@ test('reading an older pinned SHA does not roll the active version pointer backw
     assert.equal((await env.SKILL_CACHE.get('snapshot:current')), SECOND);
   } finally { globalThis.fetch = original; }
 });
+
+test('explicit inheritance text binds to juss-os without accepting a mere mention', () => {
+  const source = [
+    '---',
+    'name: futureyou-me-v10',
+    'description: Founder intake and routing.',
+    'version: 10.2.0',
+    '---',
+    '# FutureYou',
+    '## Inheritance',
+    'Read the agent instructions, then load the `juss-os` skill when available. The stricter rule wins.',
+  ].join('\n');
+  assert.equal(validateSkill('futureyou-me-v10', source, {}, KERNEL_BLOB).validation.passed, true);
+  assert.throws(() => validateSkill('futureyou-me-v10', source.replace('load the `juss-os` skill', 'mention the `juss-os` skill'), {}, KERNEL_BLOB), /validation_law_binding_exists/);
+  assert.throws(() => validateSkill('futureyou-me-v10', source.replace('The stricter rule wins.', 'The local rule is optional.'), {}, KERNEL_BLOB), /validation_law_binding_exists/);
+  assert.throws(() => validateSkill('futureyou-me-v10', source.replace('## Inheritance', '## Notes'), {}, KERNEL_BLOB), /validation_law_binding_exists/);
+});
