@@ -102,9 +102,16 @@ function asUtf8Base64(value) {
   return new TextDecoder('utf-8', { fatal: true }).decode(Uint8Array.from(binary, c => c.charCodeAt(0)));
 }
 
+export function normalizeGithubRepo(value = DEFAULT_REPO) {
+  // Only GitHub owner/repo or the exact HTTPS repository URL is accepted.
+  // Do not allow arbitrary hosts, credentials, query strings, or API path injection.
+  const match = /^(?:https:\/\/github\.com\/)?([A-Za-z0-9][A-Za-z0-9-]*)\/([A-Za-z0-9_.-]+)\/?$/i.exec(String(value || DEFAULT_REPO));
+  if (!match || match[2] === '.' || match[2] === '..') throw new ServiceError('invalid_repo_configuration');
+  return `${match[1]}/${match[2]}`;
+}
+
 async function github(env, resource) {
-  const repo = env.GITHUB_REPO || DEFAULT_REPO;
-  if (!/^[-\w]+\/[-\w]+$/.test(repo)) throw new ServiceError('invalid_repo_configuration');
+  const repo = normalizeGithubRepo(env.GITHUB_REPO);
   if (!env.GITHUB_TOKEN) throw new ServiceError('missing_github_token', 503);
   const response = await fetch(`https://api.github.com/repos/${repo}/${resource}`, {
     headers: {
@@ -245,7 +252,7 @@ export async function assembleSnapshot(env, ref = null) {
   for (const issue of quarantined) console.error('distribution quarantine', issue.skill, issue.code);
   const acceptance = acceptanceState(skills['juss-os'], acceptanceText, repoSha);
   acceptance.kernel.evidence.acceptance_md_content_hash = `sha256:${await sha256(acceptanceText)}`;
-  return { repo: env.GITHUB_REPO || DEFAULT_REPO, repo_sha: repoSha, service_version: VERSION, skills, acceptance, quarantined };
+  return { repo: normalizeGithubRepo(env.GITHUB_REPO), repo_sha: repoSha, service_version: VERSION, skills, acceptance, quarantined };
 }
 
 async function storeSnapshot(env, snapshot, setCurrent = false) {
@@ -390,7 +397,7 @@ async function route(request, env) {
   if (request.method === 'POST' && path === `${API}/webhooks/github`) {
     const payload = await verifyWebhook(request, env);
     if (!payload) throw new ServiceError('invalid_webhook_signature', 401);
-    if (request.headers.get('X-GitHub-Event') !== 'push' || payload.ref !== `refs/heads/${env.GITHUB_REF || 'main'}` || payload.repository?.full_name?.toLowerCase() !== (env.GITHUB_REPO || DEFAULT_REPO).toLowerCase()) return json({ ignored: true }, 202);
+    if (request.headers.get('X-GitHub-Event') !== 'push' || payload.ref !== `refs/heads/${env.GITHUB_REF || 'main'}` || payload.repository?.full_name?.toLowerCase() !== normalizeGithubRepo(env.GITHUB_REPO).toLowerCase()) return json({ ignored: true }, 202);
     if (!FULL_SHA.test(payload.after || '')) throw new ServiceError('invalid_webhook_revision', 400);
     const snapshot = await refreshCurrent(env, payload.after);
     return json({ refreshed: true, repo_sha: snapshot.repo_sha, published_skills: Object.keys(snapshot.skills).length });
