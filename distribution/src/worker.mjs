@@ -409,7 +409,16 @@ async function route(request, env) {
     const snapshot = await refreshCurrent(env, body.repo_sha);
     return json({ refreshed: true, repo_sha: snapshot.repo_sha, published_skills: Object.keys(snapshot.skills).length });
   }
-  if (!await authenticate(request, env)) throw new ServiceError('unauthorized', 401);
+  // Dedicated, optional server-to-server read capability for FCR. It is not a
+  // council token and grants no acceptance, skill body, validation, or admin access.
+  const fcrReadToken = env.FCR_DISTRIBUTION_CLIENT_TOKEN;
+  const fcrInventoryOnly = request.method === 'GET'
+    && path === `${API}/skills`
+    && typeof fcrReadToken === 'string'
+    && fcrReadToken.length >= 24
+    && !/\\s/.test(fcrReadToken)
+    && await tokenMatch(request, fcrReadToken);
+  if (!fcrInventoryOnly && !await authenticate(request, env)) throw new ServiceError('unauthorized', 401);
   if (request.method === 'GET' && (path === `${API}/skills` || path === `${API}/acceptance` || path.endsWith('/latest'))) {
     const { snapshot, stale } = await currentSnapshot(env);
     const headers = stale ? { 'X-Distribution-State': 'stale', 'X-Served-Repo-SHA': snapshot.repo_sha } : { 'X-Distribution-State': 'current' };
