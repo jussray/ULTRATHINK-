@@ -171,6 +171,67 @@ test('unauthorized callers cannot fetch source; authenticated routes, version an
   } finally { globalThis.fetch = original; }
 });
 
+test('dedicated FCR inventory token is read-only and never substitutes for council or admin authority', async () => {
+  const fixture = makeFixture();
+  const env = makeEnv();
+  const fcrToken = 'fcr-distribution-read-token-abcdefghijklmnopqrstuvwxyz';
+  env.FCR_DISTRIBUTION_CLIENT_TOKEN = fcrToken;
+  const original = globalThis.fetch;
+  globalThis.fetch = gitFetchFor(fixture);
+  try {
+    // Existing council client remains supported without changing its JSON map.
+    let result = await call(env, '/api/v1/skills', { token: TOKEN });
+    assert.equal(result.response.status, 200);
+    assert.equal(Object.keys(JSON.parse(env.COUNCIL_API_TOKENS_JSON)).join(','), 'chatgpt');
+
+    result = await call(env, '/api/v1/skills', { token: fcrToken });
+    assert.equal(result.response.status, 200);
+    assert.equal(result.response.headers.get('X-Distribution-State'), 'current');
+    assert.equal(result.json.repo_sha, FIRST);
+    assert.deepEqual(result.json.skills.map(s => s.name).sort(), ['juss-af-skills-pack', 'juss-os', 'truthmode']);
+    assert.equal(JSON.stringify(result.json).includes(fcrToken), false);
+    assert.equal(JSON.stringify(result.json).includes('body'), false);
+
+    for (const path of [
+      '/api/v1/acceptance',
+      '/api/v1/skills/juss-os/latest',
+      `/api/v1/skills/juss-os/sha/${FIRST}`,
+      '/api/v1/skills/juss-os/version/3.1.1'
+    ]) {
+      result = await call(env, path, { token: fcrToken });
+      assert.equal(result.response.status, 401, 'FCR token must not access ' + path);
+    }
+
+    for (const path of ['/api/v1/validate', '/api/v1/invalidate']) {
+      result = await call(env, path, {
+        method: 'POST',
+        token: fcrToken,
+        body: path.endsWith('invalidate')
+          ? { repo_sha: FIRST }
+          : { skill_name: 'juss-os' }
+      });
+      assert.equal(result.response.status, 401, 'FCR token must not mutate ' + path);
+    }
+
+    result = await call(env, '/api/v1/skills', { token: 'another-invalid-client-token-abcdefghi' });
+    assert.equal(result.response.status, 401);
+    result = await call({ ...env, FCR_DISTRIBUTION_CLIENT_TOKEN: '' }, '/api/v1/skills', { token: fcrToken });
+    assert.equal(result.response.status, 401);
+    result = await call({ ...env, FCR_DISTRIBUTION_CLIENT_TOKEN: 'short' }, '/api/v1/skills', { token: 'short' });
+    assert.equal(result.response.status, 401);
+    result = await call({ ...env, FCR_DISTRIBUTION_CLIENT_TOKEN: 'bad token with whitespace that is long' }, '/api/v1/skills', { token: 'bad token with whitespace that is long' });
+    assert.equal(result.response.status, 401);
+
+    // Read-only FCR access is independent of an unrelated council-token-map binding.
+    result = await call({ ...env, COUNCIL_API_TOKENS_JSON: undefined }, '/api/v1/skills', { token: fcrToken });
+    assert.equal(result.response.status, 200);
+    result = await call({ ...env, COUNCIL_API_TOKENS_JSON: undefined }, '/api/v1/acceptance', { token: fcrToken });
+    assert.equal(result.response.status, 503);
+  } finally {
+    globalThis.fetch = original;
+  }
+});
+
 test('signed webhook can canonicalize only the matching immutable SKILL blob while preserving historical SHA', async () => {
   const fixture = makeFixture(); const env = makeEnv(); const original = globalThis.fetch; globalThis.fetch = gitFetchFor(fixture);
   try {
