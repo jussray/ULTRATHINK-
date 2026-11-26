@@ -10,3 +10,8 @@ Read `AGENTS.md` first. This file adds only what Claude Code needs. Other runtim
 - Run the conformance checks the same way CI does: `python -m compileall -q .claude/skills/juss-os/scripts`, then from `.claude/skills/juss-os/scripts` run `python -m unittest -v test_modes.py test_evidence_ledger.py`.
 - Read PRs with `gh api repos/jussray/ULTRATHINK-/pulls` and check runs with `gh api repos/jussray/ULTRATHINK-/commits/<sha>/check-runs`. Some sessions block the GraphQL-backed `gh pr` commands, so use the REST paths.
 - Use a per-branch `git push --force-with-lease=<branch>:<sha>` pinned to the exact previous head. Fetch the branch after each push so local tracking matches.
+
+
+## Portable skill sources
+
+The repository-root `skills/` tree contains the canonical portable source packages. Claude Code still loads runtime skills from `.claude/skills/`; do not assume a root package is automatically active. Keep runtime adapters explicit and non-competing, and preserve `juss-os` as the session kernel.

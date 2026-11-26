@@ -44,3 +44,15 @@ Read the Resuming section of `futureyou-me-v10` before any push, PR, merge, depl
 ## Keeping this file true
 - A skill's status becomes "on main" only after its PR merges, and that merge must be approved on the exact PR and head.
 - Re-check every status against GitHub before editing this table.
+
+
+## Portable skill packages
+
+The top-level `skills/` directory is the canonical cross-runtime source for the four shared packages `goalfix`, `ultrathink`, `redteam`, and `proofmode`. Each package is a reference contract, not an automatic installation, privileged command, or grant of execution authority.
+
+- `skills/goalfix/SKILL.md` owns bounded repair mechanics.
+- `skills/ultrathink/SKILL.md` owns deep problem framing and option selection; the existing `juss-os` kernel remains the sole session owner for bare ULTRATHINK activation.
+- `skills/redteam/SKILL.md` owns the two-pass premise and implementation challenge.
+- `skills/proofmode/SKILL.md` owns evidence classification and verification standards.
+
+Existing `.claude/skills/` packages remain runtime-specific adapters and are not silently replaced. App repositories may reference these source packages through PromptOS manifests; local repository instructions, app-owned skills, and stricter authority rules always win. A manifest reference does not install, invoke, authorize, or prove a skill.
