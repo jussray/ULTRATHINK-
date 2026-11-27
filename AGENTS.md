@@ -44,3 +44,10 @@ Read the Resuming section of `futureyou-me-v10` before any push, PR, merge, depl
 ## Keeping this file true
 - A skill's status becomes "on main" only after its PR merges, and that merge must be approved on the exact PR and head.
 - Re-check every status against GitHub before editing this table.
+
+
+## Portfolio cinematic composition standard (staged)
+
+For every agent this kernel directs or reviews, require **one cohesive cinematic composition** when work concerns a visual app, website, game, page, screen, or creative asset. Load the target product's approved original design image and local brand canon. This is a design acceptance gate, not authority, and must not replace repository-specific instructions.
+
+Preserve product-specific approved original design references and local instructions; Figma mockups are scaffolding. Require exact-head desktop/mobile visual screenshots, interaction and keyboard, reduced-motion and performance checks before a PASS. Keep runtime adoption, source changes, merges, deployment, publication, and spending as independent evidence and approval gates. No changes to auth, payment, data, agent authority, privacy or working game controls without separate scope. Draft reference: `jussray/founder-control-room/skills/cinematic-composition/SKILL.md` on `feat/cinematic-composition-contract-20261104`.
