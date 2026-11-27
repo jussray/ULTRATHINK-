@@ -7,6 +7,7 @@ Applies to every agent working in this repository, on any runtime: Claude Code, 
 2. `.claude/skills/juss-os/SKILL.md`, then `references/os.md`, `runtime-first-class.md` and `acceptance.md`.
 3. The target repository's own agent docs (`CLAUDE.md`, `AGENTS.md`, `.claude/`). Stricter rules win.
 4. Only the specialized skill whose job applies.
+5. For authorized visual/UI/game/site work on this *candidate branch only*, load `.claude/skills/cinematic-composition/SKILL.md` and run its scoped evidence packet checker. This is a staged locally loadable skill, **not** a canonicalized runtime installation or release gate on `main`.
 
 Never ask the founder to restate any of these files.
 
